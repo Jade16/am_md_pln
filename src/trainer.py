@@ -1,3 +1,4 @@
+import torch
 from datasets import Dataset
 from transformers import (
     AutoModelForTokenClassification,
@@ -108,9 +109,30 @@ def train_model(df, base_model_name, model_output_dir):
     trainer.evaluate()
     trainer.save_model(model_output_dir)
 
-def get_pretrained_model():
-    return (None, None)
+
+def get_pretrained_model(model_dir):
+    tokenizer = AutoTokenizer.from_pretrained(model_dir)
+
+    model = AutoModelForTokenClassification.from_pretrained(
+        model_dir, num_labels=len(label_list)
+    )
+
+    return tokenizer, model
 
 
-def predict(model):
-    return None
+def predict(tokenizer, model, data):
+    tokens = tokenizer(data)
+
+    torch.tensor(tokens["input_ids"]).unsqueeze(0).size()
+
+    predictions = model.forward(
+        input_ids=torch.tensor(tokens["input_ids"]).unsqueeze(0),
+        attention_mask=torch.tensor(tokens["attention_mask"]).unsqueeze(0),
+    )
+    predictions = torch.argmax(predictions.logits.squeeze(), axis=1)
+
+    result = [label_list[i] for i in predictions]
+
+    words = tokenizer.batch_decode(tokens["input_ids"])
+
+    return words, result

@@ -20,7 +20,7 @@ parser.add_argument(
     "--batch-size",
     type=int,
     default=16,
-    help="Batch size used during training (ignored if not training)"
+    help="Batch size used during training (ignored if not training)",
 )
 
 args = parser.parse_args()
