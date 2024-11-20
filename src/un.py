@@ -1,5 +1,9 @@
 import pandas as pd
 
+MODEL_NAME = "distilbert-base-uncased"
+MODEL_OUT_DIR = "english-dataset.model"
+
+
 def get_dataset():
     f = open("datasets/un/data.txt")
 
@@ -23,15 +27,3 @@ def get_dataset():
     df = pd.DataFrame({"tokens": sentences, "ner_tags": labels})
 
     return df
-
-
-def train_model(df):
-    return (None, None)
-
-
-def get_pretrained_model():
-    return (None, None)
-
-
-def predict(model):
-    return None
