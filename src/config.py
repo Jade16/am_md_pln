@@ -20,11 +20,36 @@ parser.add_argument(
     "--batch-size",
     type=int,
     default=16,
-    help="Batch size used during training (ignored if not training)",
+    help="Batch size used during training",
 )
+
+parser.add_argument(
+    "--learning-rate",
+    type=float,
+    default=1e-4,
+    help="Learning rate used during training",
+)
+
+parser.add_argument(
+    "--epochs",
+    type=int,
+    default=3,
+    help="Number of Epochs used during training",
+)
+
+parser.add_argument(
+    "--weight-decay",
+    type=float,
+    default=1e-5,
+    help="Weight decay used during training",
+)
+
 
 args = parser.parse_args()
 
+MODEL = args.model
 DO_TRAINING = args.do_training
 BATCH_SIZE = args.batch_size
-MODEL = args.model
+LEARNING_RATE = args.learning_rate
+EPOCHS = args.epochs
+WEIGHT_DECAY = args.weight_decay

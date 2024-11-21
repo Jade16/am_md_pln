@@ -87,11 +87,11 @@ def train_model(df, base_model_name, model_output_dir):
     args = TrainingArguments(
         "test-ner",
         evaluation_strategy="epoch",
-        learning_rate=1e-4,
+        learning_rate=config.LEARNING_RATE,
         per_device_train_batch_size=config.BATCH_SIZE,
         per_device_eval_batch_size=config.BATCH_SIZE,
-        num_train_epochs=3,
-        weight_decay=1e-5,
+        num_train_epochs=config.EPOCHS,
+        weight_decay=config.WEIGHT_DECAY,
     )
 
     data_collator = DataCollatorForTokenClassification(tokenizer)
