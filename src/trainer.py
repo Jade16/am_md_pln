@@ -1,7 +1,7 @@
-import torch
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import torch
 from datasets import Dataset
+from sklearn.model_selection import train_test_split
 from transformers import (
     AutoModelForTokenClassification,
     AutoTokenizer,

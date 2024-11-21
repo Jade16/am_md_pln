@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
+import io
+
 import streamlit as st
 import wandb
 
-import un
+import config
 import data_exploration
 import trainer
-import config
+import un
 
 wandb.init(mode="disabled")
 
@@ -18,7 +20,7 @@ if config.MODEL == "un":
     model_name = un.MODEL_NAME
     model_dir = un.MODEL_OUT_DIR
 else:
-    raise ValueError("Invalid model selected, use --help to se options")
+    raise ValueError("Invalid model selected, use --help to see options")
 
 st.title("Reconhecimento e Desambiguação de Entidade Nomeada")
 
@@ -31,9 +33,11 @@ if config.DO_TRAINING:
 
 tokenizer, model = trainer.get_pretrained_model(model_dir)
 
-data = """
-Before proceeding further, I should like to inform members that action on draft resolution iv, entitled situation of human rights of Rohingya Muslims and other minorities in Myanmar is postponed to a later date to allow time for the review of its programme budget implications by the fifth committee. The assembly will take action on draft resolution iv as soon as the report of the fifth committee on the programme budget implications is available. I now give the floor to delegations wishing to deliver explanations of vote or position before voting or adoption.
-"""
+uploaded_file = st.file_uploader("Escolha um Arquivo para Realizar NER")
+if uploaded_file is not None:
+    bytes_data = uploaded_file.getvalue()
+    stringio = io.StringIO(uploaded_file.getvalue().decode("utf-8"))
+    data = stringio.read()
 
-words, tags = trainer.predict(tokenizer, model, data)
-print(words, tags)
+    result = trainer.predict(tokenizer, model, data)
+    st.table(result)
