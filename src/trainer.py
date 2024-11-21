@@ -1,4 +1,6 @@
 import torch
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from datasets import Dataset
 from transformers import (
     AutoModelForTokenClassification,
@@ -71,7 +73,9 @@ def tokenize_and_align_labels(examples, base_model_name):
 def train_model(df, base_model_name, model_output_dir):
     tokenizer = AutoTokenizer.from_pretrained(base_model_name)
 
-    train, test = Dataset.from_pandas(df.iloc[:800]), Dataset.from_pandas(df.iloc[800:])
+    train, test = train_test_split(df, test_size=config.TEST_SIZE)
+    train = Dataset.from_pandas(pd.DataFrame(train, columns=["tokens", "ner_tags"]))
+    test = Dataset.from_pandas(pd.DataFrame(test, columns=["tokens", "ner_tags"]))
 
     tokenized_train = train.map(
         lambda e: tokenize_and_align_labels(e, base_model_name), batched=True

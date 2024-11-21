@@ -44,6 +44,13 @@ parser.add_argument(
     help="Weight decay used during training",
 )
 
+parser.add_argument(
+    "--test-size",
+    type=float,
+    default=20,
+    help="Percentage of the dataset to use for testing when evaluating the dataset",
+)
+
 
 args = parser.parse_args()
 
@@ -53,3 +60,4 @@ BATCH_SIZE = args.batch_size
 LEARNING_RATE = args.learning_rate
 EPOCHS = args.epochs
 WEIGHT_DECAY = args.weight_decay
+TEST_SIZE = args.test_size / 100
