@@ -3,12 +3,11 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import wordcloud
+import altair as alt
 
 
 def streamlit_show(df):
-    fig, ax = plt.subplots()
-    df["tokens"].map(lambda ts: len(ts)).plot(kind="hist", ax=ax)
-    st.pyplot(fig)
+    st.bar_chart(df["tokens"].map(lambda ts: len(ts)).value_counts())
 
     countings = (
         df.explode("tokens")
@@ -19,14 +18,24 @@ def streamlit_show(df):
     puncts = countings[
         np.logical_not(countings.index.str.contains("[a-zA-Z0-9]", regex=True))
     ]
-    fig, ax = plt.subplots()
-    puncts.plot(kind="bar", ax=ax)
-    st.pyplot(fig)
 
-    fig, ax = plt.subplots()
-    words = countings[countings.index.str.contains("[a-zA-Z0-9]", regex=True)]
-    words[:30].plot(kind="bar", ax=ax)
-    st.pyplot(fig)
+    c = (
+        alt.Chart(puncts.reset_index())
+        .mark_bar()
+        .encode(x=alt.X("tokens", sort=None), y="ner_tags")
+    )
+    st.altair_chart(c, use_container_width=True)
+
+    words = countings[
+        countings.index.str.contains("[a-zA-Z0-9]", regex=True)
+    ].sort_values(by="ner_tags", ascending=False)
+
+    c = (
+        alt.Chart(words[:30].reset_index())
+        .mark_bar()
+        .encode(x=alt.X("tokens", sort=None), y="ner_tags")
+    )
+    st.altair_chart(c, use_container_width=True)
 
     arr = []
     for i, j in zip(df["tokens"], df["ner_tags"]):
@@ -41,9 +50,17 @@ def streamlit_show(df):
         .count()
         .sort_values("count", ascending=False)
     )
-    fig, ax = plt.subplots()
-    entity_counts[:30].plot(kind="bar", ax=ax)
-    st.pyplot(fig)
+
+    entity_counts = entity_counts.reset_index()
+
+    entity_counts["token_and_tag"] = entity_counts["token"] + " " + entity_counts["tag"]
+
+    c = (
+        alt.Chart(entity_counts[:30])
+        .mark_bar()
+        .encode(x=alt.X("token_and_tag", sort=None), y="count")
+    )
+    st.altair_chart(c, use_container_width=True)
 
     ner_counts = (
         df.explode("ner_tags")
@@ -51,25 +68,42 @@ def streamlit_show(df):
         .count()
         .sort_values("tokens", ascending=False)
     )
-    fig, ax = plt.subplots()
-    ner_counts[1:].plot(kind="bar", ax=ax)
-    st.pyplot(fig)
-
-    fig, ax = plt.subplots()
-    entity_counts.groupby("tag").count().sort_values("count", ascending=False).plot(
-        kind="bar", ax=ax
+    c = (
+        alt.Chart(ner_counts[1:].reset_index())
+        .mark_bar()
+        .encode(x=alt.X("ner_tags", sort=None), y="tokens")
     )
-    st.pyplot(fig)
+    st.altair_chart(c, use_container_width=True)
+
+    unique_entities = (
+        entity_counts.groupby("tag").count().sort_values("count", ascending=False)
+    )
+    c = (
+        alt.Chart(unique_entities.reset_index())
+        .mark_bar()
+        .encode(x=alt.X("tag", sort=None), y="count")
+    )
+    st.altair_chart(c, use_container_width=True)
+
+    occurrences = pd.DataFrame()
 
     for kind in ner_counts.index[1:]:
-        fig, ax = plt.subplots()
-        df.map(lambda ts: sum([1 if i == kind else 0 for i in ts])).groupby(
-            "ner_tags"
-        ).count().sort_values("tokens", ascending=False)[1:].plot(kind="bar", ax=ax)
-        ax.set_title(kind)
-        st.pyplot(fig)
+        occurrences_inner = (
+            df.map(lambda ts: sum([1 if i == kind else 0 for i in ts]))
+            .groupby("ner_tags")
+            .count()
+            .sort_values("tokens", ascending=False)[1:]
+        )
 
-    w = wordcloud.WordCloud(background_color="white").generate(
+        occurrences_inner["kind"] = kind
+
+        occurrences_inner = occurrences_inner.reset_index()
+
+        occurrences = pd.concat([occurrences, occurrences_inner])
+
+    st.bar_chart(occurrences, x="ner_tags", y="tokens", color="kind")
+
+    w = wordcloud.WordCloud(background_color="black").generate(
         " ".join([" ".join(i) for i in df["tokens"]])
     )
 
