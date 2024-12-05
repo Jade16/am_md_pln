@@ -11,6 +11,8 @@ import config
 import data_exploration
 import trainer
 import un
+import en
+import pt
 
 wandb.init(mode="disabled")
 
@@ -22,6 +24,14 @@ if config.MODEL == "un":
     dataset = un.get_dataset()
     model_name = un.MODEL_NAME
     model_dir = un.MODEL_OUT_DIR
+elif config.MODEL == "en":
+    dataset = en.get_dataset()
+    model_name = en.MODEL_NAME
+    model_dir = en.MODEL_OUT_DIR
+elif config.MODEL == "pt":
+    dataset = pt.get_dataset()
+    model_name = pt.MODEL_NAME
+    model_dir = pt.MODEL_OUT_DIR
 else:
     raise ValueError("Invalid model selected, use --help to see options")
 

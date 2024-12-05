@@ -1,7 +1,7 @@
 import pandas as pd
 
 MODEL_NAME = "distilbert-base-uncased"
-MODEL_OUT_DIR = "english-dataset.model"
+MODEL_OUT_DIR = "un-dataset.model"
 
 
 def get_dataset():

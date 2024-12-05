@@ -31,6 +31,7 @@
             python-pkgs.wandb
             python-pkgs.wordcloud
             python-pkgs.accelerate
+            python-pkgs.nltk
           ]))
         ];
       };
