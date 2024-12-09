@@ -41,7 +41,7 @@ st.title("Reconhecimento e Desambiguação de Entidade Nomeada")
 st.header("Exploração dos Dados")
 data_exploration.streamlit_show(dataset)
 
-train, test = train_test_split(dataset, test_size=config.TEST_SIZE)
+train, test = train_test_split(dataset, test_size=config.TEST_SIZE, random_state=config.RANDOM_SEED)
 train = Dataset.from_pandas(pd.DataFrame(train, columns=["tokens", "ner_tags"]))
 test = Dataset.from_pandas(pd.DataFrame(test, columns=["tokens", "ner_tags"]))
 

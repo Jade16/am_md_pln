@@ -55,8 +55,16 @@ parser.add_argument(
     "--device",
     type=str,
     default="cuda:0",
-    help="device to train and evaluate the models on",
+    help="Device to train and evaluate the models on",
 )
+
+parser.add_argument(
+    "--random-seed",
+    type=int,
+    default=42,
+    help="Random initial seed for train test splitting",
+)
+
 
 args = parser.parse_args()
 
@@ -68,3 +76,4 @@ EPOCHS = args.epochs
 WEIGHT_DECAY = args.weight_decay
 TEST_SIZE = args.test_size / 100
 DEVICE = args.device
+RANDOM_SEED = args.random_seed

@@ -120,7 +120,7 @@ def evaluate(tokenizer, model, df):
     pass
 
 def predict(tokenizer, model, data):
-    tokens = tokenizer(data).to(config.DEVICE)
+    tokens = tokenizer(data)
 
     torch.tensor(tokens["input_ids"]).unsqueeze(0).size()
 
