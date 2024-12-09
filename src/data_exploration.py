@@ -7,6 +7,7 @@ import altair as alt
 
 
 def streamlit_show(df):
+    st.header("Histograma do Número de Tokens por Sentença")
     st.bar_chart(df["tokens"].map(lambda ts: len(ts)).value_counts())
 
     countings = (
@@ -24,6 +25,7 @@ def streamlit_show(df):
         .mark_bar()
         .encode(x=alt.X("tokens", sort=None), y="ner_tags")
     )
+    st.header("Número de Ocorrências de pontuações")
     st.altair_chart(c, use_container_width=True)
 
     words = countings[
@@ -35,6 +37,7 @@ def streamlit_show(df):
         .mark_bar()
         .encode(x=alt.X("tokens", sort=None), y="ner_tags")
     )
+    st.header("Número de Ocorrências das 30 palavras mais comuns")
     st.altair_chart(c, use_container_width=True)
 
     arr = []
@@ -60,6 +63,7 @@ def streamlit_show(df):
         .mark_bar()
         .encode(x=alt.X("token_and_tag", sort=None), y="count")
     )
+    st.header("Número de Ocorrências dos 30 tokens compositores de entidades mais comuns")
     st.altair_chart(c, use_container_width=True)
 
     ner_counts = (
@@ -73,6 +77,7 @@ def streamlit_show(df):
         .mark_bar()
         .encode(x=alt.X("ner_tags", sort=None), y="tokens")
     )
+    st.header("Contagem da Quantidade de Tokens para Cada Tipo de Entidade")
     st.altair_chart(c, use_container_width=True)
 
     unique_entities = (
@@ -83,6 +88,8 @@ def streamlit_show(df):
         .mark_bar()
         .encode(x=alt.X("tag", sort=None), y="count")
     )
+
+    st.header("Contagem da Quantidade de Tokens Únicos para Cada Tipo de Entidade")
     st.altair_chart(c, use_container_width=True)
 
     occurrences = pd.DataFrame()
@@ -101,6 +108,7 @@ def streamlit_show(df):
 
         occurrences = pd.concat([occurrences, occurrences_inner])
 
+    st.header("Quantidade de Sentenças com um Determinado Número de Tags")
     st.bar_chart(occurrences, x="ner_tags", y="tokens", color="kind")
 
     w = wordcloud.WordCloud(background_color="black").generate(
@@ -110,4 +118,5 @@ def streamlit_show(df):
     fig, ax = plt.subplots(figsize=(10, 10))
     ax.imshow(w, interpolation="bilinear")
     ax.axis("off")
+    st.header("Word Cloud do Dataset")
     st.pyplot(fig)
