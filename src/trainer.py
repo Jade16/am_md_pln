@@ -79,7 +79,7 @@ def train_model(train, test, base_model_name, model_output_dir):
 
     model = AutoModelForTokenClassification.from_pretrained(
         base_model_name, num_labels=len(label_list)
-    )
+    ).to(config.DEVICE)
 
     args = TrainingArguments(
         "test-ner",
@@ -112,7 +112,7 @@ def get_pretrained_model(model_dir):
 
     model = AutoModelForTokenClassification.from_pretrained(
         model_dir, num_labels=len(label_list)
-    )
+    ).to(config.DEVICE)
 
     return tokenizer, model
 
@@ -120,7 +120,7 @@ def evaluate(tokenizer, model, df):
     pass
 
 def predict(tokenizer, model, data):
-    tokens = tokenizer(data)
+    tokens = tokenizer(data).to(config.DEVICE)
 
     torch.tensor(tokens["input_ids"]).unsqueeze(0).size()
 

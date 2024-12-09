@@ -51,6 +51,12 @@ parser.add_argument(
     help="Percentage of the dataset to use for testing when evaluating the dataset",
 )
 
+parser.add_argument(
+    "--device",
+    type=str,
+    default="cuda:0",
+    help="device to train and evaluate the models on",
+)
 
 args = parser.parse_args()
 
@@ -61,3 +67,4 @@ LEARNING_RATE = args.learning_rate
 EPOCHS = args.epochs
 WEIGHT_DECAY = args.weight_decay
 TEST_SIZE = args.test_size / 100
+DEVICE = args.device
