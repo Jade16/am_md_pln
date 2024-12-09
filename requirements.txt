@@ -1,0 +1,14 @@
+streamlit
+seaborn
+numpy
+matplotlib
+pandas
+transformers
+datasets
+seqeval
+torch
+wandb
+wordcloud
+accelerate
+nltk
+

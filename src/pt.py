@@ -3,7 +3,7 @@ import pandas as pd
 import nltk
 
 
-MODEL_NAME = "?"
+MODEL_NAME = "distilbert/distilbert-base-multilingual-cased"
 MODEL_OUT_DIR = "portuguese-dataset.model"
 
 symbols = {"@": "LOC", "&": "PER", "§": "MISC"}
