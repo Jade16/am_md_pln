@@ -39,9 +39,7 @@ label_encoding_dict = {
 }
 
 
-def tokenize_and_align_labels(examples, base_model_name):
-    tokenizer = AutoTokenizer.from_pretrained(base_model_name)
-
+def tokenize_and_align_labels(examples, tokenizer):
     tokenized_inputs = tokenizer(
         list(examples["tokens"]), truncation=True, is_split_into_words=True
     )
@@ -71,10 +69,10 @@ def train_model(train, test, base_model_name, model_output_dir):
     tokenizer = AutoTokenizer.from_pretrained(base_model_name)
 
     tokenized_train = train.map(
-        lambda e: tokenize_and_align_labels(e, base_model_name), batched=True
+        lambda e: tokenize_and_align_labels(e, tokenizer), batched=True
     )
     tokenized_test = test.map(
-        lambda e: tokenize_and_align_labels(e, base_model_name), batched=True
+        lambda e: tokenize_and_align_labels(e, tokenizer), batched=True
     )
 
     model = AutoModelForTokenClassification.from_pretrained(
@@ -105,7 +103,6 @@ def train_model(train, test, base_model_name, model_output_dir):
     trainer.train()
     trainer.evaluate()
     trainer.save_model(model_output_dir)
-
 
 def get_pretrained_model(model_dir):
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
